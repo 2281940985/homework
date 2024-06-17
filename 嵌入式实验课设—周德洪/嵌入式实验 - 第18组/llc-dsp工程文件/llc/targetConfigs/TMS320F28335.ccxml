@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configurations XML_version="1.2" id="configurations_0">
+    <instance XML_version="1.2" desc="Cortex-R4 CPU Functional Simulator, Big Endian" href="configurations/tisim_cortexr4be32.xml" id="Cortex-R4 CPU Functional Simulator, Big Endian" xml="tisim_cortexr4be32.xml" xmlpath="configurations"/>
+    <configuration XML_version="1.2" description="Simulates the Cortex-R4 core and a flat memory system. No other peripherals are modeled. This configuraturation is a functional (bit-accurate) configuration suitable for core level algorithms development. It does not support cycle accuracy" id="Cortex-R4 CPU Functional Simulator, Big Endian">
+        <connection XML_version="1.2" desc="Cortex-R4 CPU Functional Simulator, Big Endian_0" id="Cortex-R4 CPU Functional Simulator, Big Endian"/>
+    </configuration>
+</configurations>

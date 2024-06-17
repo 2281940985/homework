@@ -1,0 +1,93 @@
+
+#include "DSP2833x_Device.h" // DSP2833x Headerfile Include File
+#include "DSP2833x_Examples.h" // DSP2833x Examples Include File
+#include "adc.h"
+#include "epwm.h"
+
+#define BUFF_SIZE   2
+Uint16 SampleTable[BUFF_SIZE];
+Uint16 i;
+#define CPU_CLK    150e6
+#define PWM_CLK    20e3      // If diff freq. desired, change freq here.载波频率
+float Uzaibo;
+
+float ts=0.00000001,Kp=1.75,Ki=0.035,Uoef=48;
+float ts1=0.002,Kp1=0.85,Ki1=0.05;
+float error,error1,Iek,Iin,Ioef,Iout,Uin,Uek,Uout;
+float Sample0,Sample1;
+
+interrupt void adc_isr(void);         // ADC中断子函数
+
+
+
+
+void main()
+{
+     InitSysCtrl();        // 系统初始化
+     InitGpio();         // 初始化GPIO
+     InitEPwm1Gpio();       // GPIO0,GPIO1,GPIO2,GPIO3,设为外设功能
+     DINT;          // 设置中断之前，需要先关闭中断
+     InitPieCtrl();        //初始化中断控制
+     InitPieVectTable();       //初始化中断向量表
+     IER = 0x0000;        //CPU中断寄存器清零
+     IFR = 0x0000;
+     EALLOW;
+        PieVectTable.ADCINT = &adc_isr;       // 将程序中需要的中断映射到中断向量表ADC中断
+     EDIS;
+     ADC_Init();
+     EPWM1_Init(500);
+     EPwm1A_SetCompare(250);
+     EPwm1B_SetCompare(250);
+     EALLOW;
+        SysCtrlRegs.PCLKCR0.bit.TBCLKSYNC = 1;
+     EDIS;
+     //Step 5. 使能中断
+         IER |= M_INT1;                        // 使能CPU中断：ADCINT在第1组中断
+         PieCtrlRegs.PIEIER1.bit.INTx6 = 1;    // 使能PIE中断：ADCINT是PIE第1组的第6个中断
+         EINT;                                 // 使能总中断 INTM
+         ERTM;                                 // 使能总实时中断 DBGM
+
+     //Step 6. 循环等待中断
+         for(; ;)
+         {
+             asm("          NOP");
+         }
+}
+
+interrupt void adc_isr(void)   // ADC中断子函数
+{
+    for(i = 0; i < BUFF_SIZE; i++)
+                {
+                    SampleTable[i] = 0;
+                }
+
+                    while (AdcRegs.ADCST.bit.INT_SEQ1 == 0) {}  //等待转换完成，级联不需要等待INT_SEQ2
+                    AdcRegs.ADCST.bit.INT_SEQ1_CLR = 1;         //清除中断标识
+                    SampleTable[0] = AdcRegs.ADCRESULT0>>4;
+                    SampleTable[1] = AdcRegs.ADCRESULT1>>4;
+                    Sample0=SampleTable[0]*3/4096;
+                    Sample1=SampleTable[1]*3/4096;
+                    //电压外环
+                    Uin=Sample0;
+                    error=Uoef-Uin;
+                    Uek+=ts*error;
+                    Uout=Kp*error+Ki*Uek;
+                    if(Uout>30)
+                       Uout=30;
+                    if(Uout<-30)
+                       Uout=-30;
+                    Ioef=Uout;
+                    Iin=Sample1;
+                    //电流内环
+                    error1=Ioef-Iin;
+                    Iek+=ts1*error1;
+                    Iout=Kp1*error1+Ki1*Iek;
+                        Iout=2999;
+                    Uzaibo=Iout;
+
+                    AdcRegs.ADCTRL2.bit.RST_SEQ1 = 1;         // Reset SEQ1
+                     AdcRegs.ADCST.bit.INT_SEQ1_CLR = 1;       // Clear INT SEQ1 bit
+                     PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;   // Acknowledge interrupt to PIE
+
+                  return;
+}

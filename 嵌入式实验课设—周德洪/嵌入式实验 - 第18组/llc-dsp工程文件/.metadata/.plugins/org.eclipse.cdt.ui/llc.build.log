@@ -1,0 +1,12 @@
+
+**** Build of configuration Debug for project llc ****
+
+"D:\\ti\\ccsv6\\utils\\bin\\gmake" -k all 
+'Building file: "../APP/LEDS/LEDS.c"'
+'Invoking: C2000 Compiler'
+"D:/CCS/CCS1230/ccs/tools/compiler/ti-cgt-c2000_22.6.0.LTS/bin/cl2000" -v28 -ml -mt --float_support=fpu32 --include_path="E:/CCSproject/DSP2833x_Example/DSP2883351111/APP/time" --include_path="E:/CCSproject/DSP2833x_Example/DSP2883351111/APP/epwm" --include_path="E:/CCSproject/DSP2833x_Example/DSP2883351111/APP/exti" --include_path="E:/CCSproject/DSP2833x_Example/DSP2883351111/APP/key" --include_path="E:/CCSproject/DSP2833x_Example/DSP2883351111/APP/LEDS" --include_path="E:/CCSproject/DSP2833x_Libraries/DSP2833x_common/include" --include_path="E:/CCSproject/DSP2833x_Libraries/DSP2833x_headers/include" --include_path="E:/CCSproject/DSP2833x_Example/DSP2883351111/APP/smg" --include_path="D:/CCS/CCS1230/ccs/tools/compiler/ti-cgt-c2000_22.6.0.LTS/include" -g --diag_warning=225 --diag_wrap=off --display_error_number --abi=coffabi --preproc_with_compile --preproc_dependency="APP/LEDS/LEDS.d_raw" --obj_directory="APP/LEDS"  "../APP/LEDS/LEDS.c"
+系统找不到指定的路径。
+gmake: *** [APP/LEDS/LEDS.obj] Error 1
+gmake: Target `all' not remade because of errors.
+
+**** Build Finished ****
