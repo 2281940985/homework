@@ -70,6 +70,7 @@
     * 执行make命令需要Makefile文件，执行后才会生成可以运行的二进制文件   
     * 命令行一切皆字符串形式，数字要做转换。  
     * 执行cmake命令时，当前目录不能存在上一次运行过cmake的输出文件，否则不会覆盖。  
+    * cmake中用`${变量}`来取变量的值
     * `cmake_minimum_required(VERSION 3.15)`指定cmake的版本  
     * `project(test)`创建项目名称，可随意更改  
     * `set(CMAKW_CXX_STANDARD 11)`指定c++的标准
@@ -80,9 +81,19 @@
     * `set(EXECUTABLE_OUTPUT_PATH /home/zty/cmake_study/demo1/out)`可执行文件的输出路径，文件夹会自行创建  
     * `include_directories(${PROJECT_SOURCE_DIR}/include)`指定头件的路径  
     * `add_executable(app ${SRC})`将SRC的内容提取到app可执行文件  
-    * `set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)` 指定库的输出路径
+    * `set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)` 指定库的输出路径  
+    * linux中的库文件 .a是静态库，.so是动态库  
+    * `link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib1)`连接当前CMakeLists.txt文件夹下的库文件目录（动态库和静态库都可以链接）
+    * `link_libraries(calc)`连接静态库文件（可以包含多个）  
+    * 静态库的二进制文件内容会跟SRC变量一起打包在可执行的二进制文件中，而动态库不会
+    * `target_link_libraries(app calc)`必须写在生成的可执行文件后面，即`add_executable()`后，链接动态库，第一个参数是需要链接动态库的源文件或者可执行文件，之后就是动态库  
+
+    
+
+
     eg:   
-```#[[这是一个CMakeLists.txt文件]]
+```
+#[[这是一个CMakeLists.txt文件]]
 cmake_minimum_required(VERSION 3.15)
 project(test)
 file(GLOB SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)#可以递归搜索
