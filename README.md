@@ -12,9 +12,15 @@
             "command": "g++",
             "args": [
                 "-g",
-                "${workspaceFolder}/*.cpp",//待编译的cpp文件
+                "${workspaceFolder}/src/*.cpp",//待编译的cpp文件
+                // "${workspaceFolder}/src/algebra.cpp",
+                // "${workspaceFolder}/src/main.cpp",
+                // "${workspaceFolder}/src/unit_test.cpp",
                 "-o",
-                "${workspaceFolder}/main"//编译完成后的输出的二进制文件
+                "${workspaceFolder}/build/main",//编译完成后的输出的二进制文件
+                "-lgtest",//链接 Google Test 库。
+                "-lgtest_main",//链接 Google Test 主函数库。
+                "-pthread"//链接 pthread 库，Google Test 依赖于 pthread 库。
             ],
             "group": {
                 "kind": "build",
@@ -36,7 +42,7 @@
             "name": "GDB Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/main", // 可执行文件路径
+            "program": "${workspaceFolder}/build/main", // 可执行文件路径
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -105,6 +111,28 @@ include_directories(${PROJECT_SOURCE_DIR}/include)#指定头件的路径
 set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 #add_executable(app ${SRC})#将SRC的内容提取到app可执行文件  
 add_library(calc SHARED ${SRC})
+```  
+eg2 : 包含测试（给test）的CMakelists.txt:  
+```
+cmake_minimum_required(VERSION 3.13)
+project(AP)
+
+set(CMAKE_CXX_STANDARD 17)
+
+find_package(GTest REQUIRED)
+
+include_directories(include/)#包含头文件路径
+
+add_executable(main #生成可执行文件链接到指定的cpp文件
+        src/algebra.cpp
+        src/main.cpp
+        src/unit_test.cpp
+)
+target_link_libraries(main #链接gtest库
+        GTest::GTest
+        GTest::Main
+)
+
 ```
 
 
