@@ -1,0 +1,28 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-g",
+                "${workspaceFolder}/src/*.cpp",//待编译的cpp文件
+                // "${workspaceFolder}/src/algebra.cpp",
+                // "${workspaceFolder}/src/main.cpp",
+                // "${workspaceFolder}/src/unit_test.cpp",
+                "-o",
+                "${workspaceFolder}/build/main",//编译完成后的输出的二进制文件
+                "-lgtest",
+                "-lgtest_main",
+                "-pthread"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "detail": "Generated task by Debugger."
+        }
+    ]
+    }
